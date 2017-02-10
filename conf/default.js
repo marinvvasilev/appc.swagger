@@ -2,7 +2,10 @@ module.exports = {
 	// Configure Connector.
 	connectors: {
 		'appc.swagger': {
-			swaggerDocs: 'http://dashboard.appcelerator.com/api/v1/api-docs.json',
+			swaggerDocs: 'http://petstore.swagger.io/v2/swagger.json',
+			authenticationProvider: {
+
+			},
 			modelAutogen: true,
 			generateModelsFromSchema: true,
 			login: {
