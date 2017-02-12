@@ -1,5 +1,5 @@
 const test = require('tape');
-const utils = require('./../../lib/utility/utils');
+const utils = require('./../../lib/utils/swaggerParseUtils');
 
 test('### parseModelName() - should ignore first segment if version ###', t => {
 	t.equal(utils.parseModelName('/v1/pet'), 'Pet');

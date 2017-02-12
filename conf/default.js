@@ -2,6 +2,7 @@ module.exports = {
 	// Configure Connector.
 	connectors: {
 		'appc.swagger': {
+			skipModelNamespace: true,
 			swaggerDocs: 'http://petstore.swagger.io/v2/swagger.json',
 			authenticationProvider: {
 

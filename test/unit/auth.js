@@ -4,10 +4,10 @@ const request = require('superagent');
 const Arrow = require('arrow');
 const serverFactory = require('../server');
 
-const auth = require('../../lib/authentication/auth');
-const ApiKeyAuthentication = require('../../lib/authentication/providers/api-key');
-const BasicAuthentication = require('../../lib/authentication/providers/basic');
-const OauthAuthentication = require('../../lib/authentication/providers/oauth');
+const auth = require('../../lib/utils/authentication/auth');
+const ApiKeyAuthentication = require('../../lib/utils/authentication/providers/api-key');
+const BasicAuthentication = require('../../lib/utils/authentication/providers/basic');
+const OauthAuthentication = require('../../lib/utils/authentication/providers/oauth');
 
 var SERVER, CONNECTOR, CONFIG;
 test('### START SERVER ###', t => {
