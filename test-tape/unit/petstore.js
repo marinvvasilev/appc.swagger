@@ -1,29 +1,45 @@
 const test = require('tape');
 const serverFactory = require('../server');
+const Arrow = require('arrow');
 
-var SERVER;
-test('### START SERVER ###', function (t) {
-	serverFactory(arrow => {
-		t.ok(arrow, 'Arrow has been started');
-		SERVER = arrow;
-		t.end();
-	});
+var SERVER, CONNECTOR, CONFIG;
+test('### START SERVER ###', function (t) {	
+	// serverFactory(arrow => {
+	// 	t.ok(arrow, 'Arrow has been started');
+	// 	SERVER = arrow;
+	// 	t.end();
+	// });
+		SERVER = new Arrow();
+		CONNECTOR = SERVER.getConnector('appc.swagger');
+		CONFIG = CONNECTOR.config;
+
+		// hack it
+		CONFIG.swaggerDocs = 'http://petstore.swagger.io/v2/swagger.json';
+		CONFIG.login.username = null;
+		CONFIG.login.password = null;
+
+		CONNECTOR.connect( err => {
+			t.notOk(err);
+
+			const PetModel = CONNECTOR.getModel('Pet');
+			t.ok(PetModel);
+			const OrderModel = CONNECTOR.getModel('Order');
+			t.ok(OrderModel);
+			t.end()
+		});
+	
 });
 
 test('### Could obtaind models from connector ###', t => {
-	const connector = SERVER.getConnector('appc.swagger');
-	const config = connector.config;
-	const PetModel = connector.getModel('Pet');
-	const OrderModel = connector.getModel('Order');
+	const PetModel = CONNECTOR.getModel('Pet');
+	const OrderModel = CONNECTOR.getModel('Order');
 	t.ok(PetModel, 'Pet Model is available');
 	t.ok(OrderModel, 'Order Model is available');
 	t.end();
 });
 
 test('### Should be able to fetch metadata ###', t => {
-	const connector = SERVER.getConnector('appc.swagger');
-	const config = connector.config;
-	connector.fetchMetadata(function (err, meta) {
+	CONNECTOR.fetchMetadata(function (err, meta) {
 		t.notOk(err, 'fetchMetadata execute successfully');
 		t.ok(meta, 'fetchMetadata return meta information');
 		t.ok(meta['fields'], 'meta information contains fields');
@@ -32,9 +48,7 @@ test('### Should be able to fetch metadata ###', t => {
 });
 
 test('### Should be able to find all instances ###', t => {
-	const connector = SERVER.getConnector('appc.swagger');
-	const config = connector.config;
-	const PetModel = connector.getModel('Pet');
+	const PetModel = CONNECTOR.getModel('Pet');
 	PetModel.findPetsByStatus({ status: ['available'] }, (err, collection) => {
 		t.ok(collection, 'collection with pets has been found');
 		const id = collection[0].getPrimaryKey();
@@ -48,19 +62,18 @@ test('### Should be able to find all instances ###', t => {
 });
 
 test('### Should throw TypeError if callback function is not passed to API method call ###', t => {
-	const connector = SERVER.getConnector('appc.swagger');
-	const config = connector.config;
 	t.throws(invokeWithoutCallback, 'findPetsByStatus throws without callback');
 	t.end();
 	function invokeWithoutCallback() {
-		const PetModel = connector.getModel('Pet');
+		const PetModel = CONNECTOR.getModel('Pet');
 		PetModel.findPetsByStatus({ status: ['available'] });
 	};
 });
 
-test('### STOP SERVER ###', function (t) {
-	SERVER.stop(function () {
-		t.pass('Arrow has been stopped!');
-		t.end();
-	});
-});
+// fddfhdh
+// test('### STOP SERVER ###', function (t) {
+// 	SERVER.stop(function () {
+// 		t.pass('Arrow has been stopped!');
+// 		t.end();
+// 	});
+// });
